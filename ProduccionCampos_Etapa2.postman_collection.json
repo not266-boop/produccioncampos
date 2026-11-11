@@ -1,0 +1,1030 @@
+{
+  "info": {
+    "name": "ProduccionCampos - Etapa 2",
+    "description": "Ejecutar despues de la Etapa 1, con la base de datos de esa corrida.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Login admin",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Esperado: 200 con token",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  pm.collectionVariables.set(\"token\", pm.response.json().token);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Crear insumo Huevo",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "description": "Esperado: 201",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Huevo\",\n  \"unidad\": \"UND\",\n  \"stock\": 30,\n  \"stockMinimo\": 10,\n  \"costo\": 0.5,\n  \"activo\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set(\"huevoId\", pm.response.json().id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Crear receta Pan de yema",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/recetas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "recetas"
+          ]
+        },
+        "description": "Esperado: 201",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Pan de yema\",\n  \"rendimiento\": 50,\n  \"activa\": true,\n  \"detalles\": [\n    {\n      \"insumoId\": 1,\n      \"cantidad\": 4\n    },\n    {\n      \"insumoId\": {{huevoId}},\n      \"cantidad\": 10\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set(\"recetaPanId\", pm.response.json().id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Crear comanda TIENDA",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas"
+          ]
+        },
+        "description": "Esperado: 201, estado PENDIENTE",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"origen\": \"TIENDA\",\n  \"fecha\": \"2026-11-11\",\n  \"turno\": 1,\n  \"observacion\": \"Pedido de tienda\",\n  \"detalles\": [\n    {\n      \"recetaId\": 1,\n      \"cantidad\": 200\n    },\n    {\n      \"recetaId\": {{recetaPanId}},\n      \"cantidad\": 100\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set(\"comandaId\", pm.response.json().id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Comanda invalida (400)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas"
+          ]
+        },
+        "description": "Esperado: 400 con fieldErrors de origen, fecha, turno y detalles",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"origen\": null,\n  \"fecha\": null,\n  \"turno\": 5,\n  \"detalles\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "06 Comanda con receta inexistente (404, rollback)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas"
+          ]
+        },
+        "description": "Esperado: 404; la comanda no debe guardarse",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"origen\": \"DELIVERY\",\n  \"fecha\": \"2026-11-11\",\n  \"turno\": 2,\n  \"detalles\": [\n    {\n      \"recetaId\": 1,\n      \"cantidad\": 10\n    },\n    {\n      \"recetaId\": 999,\n      \"cantidad\": 10\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "07 Listar comandas (filtro y paginacion)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas?estado=PENDIENTE&page=0&size=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas"
+          ],
+          "query": [
+            {
+              "key": "estado",
+              "value": "PENDIENTE"
+            },
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "5"
+            }
+          ]
+        },
+        "description": "Esperado: 200, totalElements 1: solo la comanda TIENDA",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "08 Requerimientos de la comanda",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas/{{comandaId}}/requerimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas",
+            "{{comandaId}}",
+            "requerimientos"
+          ]
+        },
+        "description": "Esperado: 200: Harina 18, Manteca 2, Huevo 20 y stockSuficiente true",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "09 Producir comanda (transaccion)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/producciones",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "producciones"
+          ]
+        },
+        "description": "Esperado: 201 con consumos y usuario admin",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"comandaId\": {{comandaId}},\n  \"observacion\": \"Turno 1\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10 Producir otra vez (409)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/producciones",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "producciones"
+          ]
+        },
+        "description": "Esperado: 409, ya fue producida",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"comandaId\": {{comandaId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "11 Stock de Harina descontado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos",
+            "1"
+          ]
+        },
+        "description": "Esperado: 200, Harina con stock 82",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "12 Crear comanda DELIVERY grande",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas"
+          ]
+        },
+        "description": "Esperado: 201",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"origen\": \"DELIVERY\",\n  \"fecha\": \"2026-11-11\",\n  \"turno\": 2,\n  \"observacion\": \"Pedido grande\",\n  \"detalles\": [\n    {\n      \"recetaId\": 1,\n      \"cantidad\": 1000\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set(\"comandaGrandeId\", pm.response.json().id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 Requerimientos sin stock",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas/{{comandaGrandeId}}/requerimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas",
+            "{{comandaGrandeId}}",
+            "requerimientos"
+          ]
+        },
+        "description": "Esperado: 200: Harina 50 suficiente, Manteca 10 insuficiente y stockSuficiente false",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "14 Producir sin stock (409, rollback)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/producciones",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "producciones"
+          ]
+        },
+        "description": "Esperado: 409, stock insuficiente de Manteca",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"comandaId\": {{comandaGrandeId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "15 Comprobar rollback de Harina",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos",
+            "1"
+          ]
+        },
+        "description": "Esperado: 200, Harina sigue en 82 (no en 32)",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "16 Comanda grande sigue pendiente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas/{{comandaGrandeId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas",
+            "{{comandaGrandeId}}"
+          ]
+        },
+        "description": "Esperado: 200, estado PENDIENTE",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "17 Listar producciones",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/producciones",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "producciones"
+          ]
+        },
+        "description": "Esperado: 200, totalElements 1",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "18 JPQL consumo por insumo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/producciones/consumo?desde={{desde}}&hasta={{hasta}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "producciones",
+            "consumo"
+          ],
+          "query": [
+            {
+              "key": "desde",
+              "value": "{{desde}}"
+            },
+            {
+              "key": "hasta",
+              "value": "{{hasta}}"
+            }
+          ]
+        },
+        "description": "Esperado: 200: Huevo 20, Harina 18 y Manteca 2",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const d = new Date();",
+              "const f = x => x.toISOString().slice(0, 10);",
+              "pm.collectionVariables.set(\"desde\", f(new Date(d.getTime() - 86400000)));",
+              "pm.collectionVariables.set(\"hasta\", f(new Date(d.getTime() + 86400000)));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "19 Modificar comanda producida (409)",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas/{{comandaId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas",
+            "{{comandaId}}"
+          ]
+        },
+        "description": "Esperado: 409",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"origen\": \"TIENDA\",\n  \"fecha\": \"2026-11-11\",\n  \"turno\": 1,\n  \"detalles\": [\n    {\n      \"recetaId\": 1,\n      \"cantidad\": 1\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "20 Eliminar receta en uso (409)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/recetas/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "recetas",
+            "1"
+          ]
+        },
+        "description": "Esperado: 409",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "21 Login user",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Esperado: 200; el token pasa a ser de user",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  pm.collectionVariables.set(\"token\", pm.response.json().token);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "22 Eliminar comanda como user (403)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas/{{comandaGrandeId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas",
+            "{{comandaGrandeId}}"
+          ]
+        },
+        "description": "Esperado: 403",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "23 Login admin otra vez",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Esperado: 200",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  pm.collectionVariables.set(\"token\", pm.response.json().token);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "24 Eliminar comanda pendiente (204)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas/{{comandaGrandeId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas",
+            "{{comandaGrandeId}}"
+          ]
+        },
+        "description": "Esperado: 204",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "25 Eliminar comanda producida (409)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas/{{comandaId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas",
+            "{{comandaId}}"
+          ]
+        },
+        "description": "Esperado: 409",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "huevoId",
+      "value": ""
+    },
+    {
+      "key": "recetaPanId",
+      "value": ""
+    },
+    {
+      "key": "comandaId",
+      "value": ""
+    },
+    {
+      "key": "comandaGrandeId",
+      "value": ""
+    },
+    {
+      "key": "desde",
+      "value": ""
+    },
+    {
+      "key": "hasta",
+      "value": ""
+    }
+  ]
+}

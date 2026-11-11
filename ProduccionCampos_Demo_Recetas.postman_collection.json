@@ -1,0 +1,1333 @@
+{
+  "info": {
+    "name": "ProduccionCampos - Demo recetas reales",
+    "description": "Carga 3 recetas reales de Panadería Campos con su rendimiento por tanda: Rosquitas de manteca (72 kg), Pasteles mil hojas / cachito (60 unidades) y Bizcochuelo (6 moldes redondos grandes), con sus 12 insumos. Stocks y costos de prueba. Requiere el backend con perfil dev.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.collectionVariables.set('hoy', new Date().toISOString().slice(0,10));"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Login admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "pm.collectionVariables.set('token', pm.response.json().token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "02 Crear insumo Harina Extra Inca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('harExtId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Harina Extra Inca\",\n  \"unidad\": \"KG\",\n  \"costo\": 3.2,\n  \"stock\": 150,\n  \"stockMinimo\": 50,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "03 Crear insumo Manteca Famosa",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('mantId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Manteca Famosa\",\n  \"unidad\": \"KG\",\n  \"costo\": 8.5,\n  \"stock\": 60,\n  \"stockMinimo\": 20,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "04 Crear insumo Levadura Fleischman",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('levId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Levadura Fleischman\",\n  \"unidad\": \"KG\",\n  \"costo\": 12.0,\n  \"stock\": 25,\n  \"stockMinimo\": 5,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "05 Crear insumo Sal Fluorada y Yodada EMSAL",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('salId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Sal Fluorada y Yodada EMSAL\",\n  \"unidad\": \"KG\",\n  \"costo\": 1.2,\n  \"stock\": 25,\n  \"stockMinimo\": 5,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "06 Crear insumo Azúcar Rubia Cartavio",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('azRubId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Azúcar Rubia Cartavio\",\n  \"unidad\": \"KG\",\n  \"costo\": 3.6,\n  \"stock\": 50,\n  \"stockMinimo\": 10,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "07 Crear insumo Colorante Amarillo Huevo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('colId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Colorante Amarillo Huevo\",\n  \"unidad\": \"UND\",\n  \"costo\": 0.8,\n  \"stock\": 20,\n  \"stockMinimo\": 5,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "08 Crear insumo Harina Pastelera",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('harPastId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Harina Pastelera\",\n  \"unidad\": \"KG\",\n  \"costo\": 3.4,\n  \"stock\": 50,\n  \"stockMinimo\": 10,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "09 Crear insumo Margarina Primavera",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('margId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Margarina Primavera\",\n  \"unidad\": \"KG\",\n  \"costo\": 9.5,\n  \"stock\": 16,\n  \"stockMinimo\": 8,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "10 Crear insumo Harina Especial Inca",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('harEspId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Harina Especial Inca\",\n  \"unidad\": \"KG\",\n  \"costo\": 3.5,\n  \"stock\": 50,\n  \"stockMinimo\": 10,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "11 Crear insumo Chuño",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('chunoId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Chuño\",\n  \"unidad\": \"KG\",\n  \"costo\": 6.0,\n  \"stock\": 25,\n  \"stockMinimo\": 5,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "12 Crear insumo Azúcar Blanca Cartavio",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('azBlId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Azúcar Blanca Cartavio\",\n  \"unidad\": \"KG\",\n  \"costo\": 3.8,\n  \"stock\": 50,\n  \"stockMinimo\": 10,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "13 Crear insumo Polvo de Hornear",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('polvoId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Polvo de Hornear\",\n  \"unidad\": \"UND\",\n  \"costo\": 0.6,\n  \"stock\": 40,\n  \"stockMinimo\": 20,\n  \"activo\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "14 Crear receta Rosquitas de manteca (kg) - rinde 72",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('recRosId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/recetas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "recetas"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Rosquitas de manteca (kg)\",\n  \"rendimiento\": 72,\n  \"activa\": true,\n  \"detalles\": [\n    {\n      \"insumoId\": \"{{harExtId}}\",\n      \"cantidad\": 50\n    },\n    {\n      \"insumoId\": \"{{mantId}}\",\n      \"cantidad\": 25\n    },\n    {\n      \"insumoId\": \"{{levId}}\",\n      \"cantidad\": 0.5\n    },\n    {\n      \"insumoId\": \"{{salId}}\",\n      \"cantidad\": 1\n    },\n    {\n      \"insumoId\": \"{{azRubId}}\",\n      \"cantidad\": 1.86\n    },\n    {\n      \"insumoId\": \"{{colId}}\",\n      \"cantidad\": 1\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "15 Crear receta Pasteles mil hojas / cachito (und) - rinde 60",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('recPastId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/recetas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "recetas"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Pasteles mil hojas / cachito (und)\",\n  \"rendimiento\": 60,\n  \"activa\": true,\n  \"detalles\": [\n    {\n      \"insumoId\": \"{{harPastId}}\",\n      \"cantidad\": 1\n    },\n    {\n      \"insumoId\": \"{{margId}}\",\n      \"cantidad\": 1\n    },\n    {\n      \"insumoId\": \"{{salId}}\",\n      \"cantidad\": 0.02\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "16 Crear receta Bizcochuelo (molde redondo grande) - rinde 6",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('recBizId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/recetas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "recetas"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Bizcochuelo (molde redondo grande)\",\n  \"rendimiento\": 6,\n  \"activa\": true,\n  \"detalles\": [\n    {\n      \"insumoId\": \"{{harEspId}}\",\n      \"cantidad\": 1.4\n    },\n    {\n      \"insumoId\": \"{{chunoId}}\",\n      \"cantidad\": 1.4\n    },\n    {\n      \"insumoId\": \"{{azBlId}}\",\n      \"cantidad\": 1.8\n    },\n    {\n      \"insumoId\": \"{{polvoId}}\",\n      \"cantidad\": 2\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "17 Escalar rosquitas a 360 kg (5 tandas)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "pm.test('Factor 5', () => pm.expect(pm.response.json().factor).to.eql(5));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/recetas/{{recRosId}}/escalar?cantidad=360",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "recetas",
+            "{{recRosId}}",
+            "escalar"
+          ],
+          "query": [
+            {
+              "key": "cantidad",
+              "value": "360"
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "18 Crear comanda TIENDA (144 kg roscas, 120 pasteles, 12 bizcochuelos)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('comandaId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"origen\": \"TIENDA\",\n  \"fecha\": \"{{hoy}}\",\n  \"turno\": 1,\n  \"observacion\": \"Demo: pedido de tienda\",\n  \"detalles\": [\n    {\n      \"recetaId\": \"{{recRosId}}\",\n      \"cantidad\": 144\n    },\n    {\n      \"recetaId\": \"{{recPastId}}\",\n      \"cantidad\": 120\n    },\n    {\n      \"recetaId\": \"{{recBizId}}\",\n      \"cantidad\": 12\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "19 Requerimientos de la comanda",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas/{{comandaId}}/requerimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas",
+            "{{comandaId}}",
+            "requerimientos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "20 Producir comanda (transaccion)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/producciones",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "producciones"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"comandaId\": \"{{comandaId}}\",\n  \"observacion\": \"Demo turno 1\"\n}"
+        }
+      }
+    },
+    {
+      "name": "21 Manteca descontada (60 - 50 = 10)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "pm.test('Quedan 10 kg de manteca', () => pm.expect(pm.response.json().stock).to.eql(10));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos/{{mantId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos",
+            "{{mantId}}"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "22 Crear comanda DELIVERY (72 kg roscas)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('comandaGrandeId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"origen\": \"DELIVERY\",\n  \"fecha\": \"{{hoy}}\",\n  \"turno\": 2,\n  \"observacion\": \"Demo: pedido delivery\",\n  \"detalles\": [\n    {\n      \"recetaId\": \"{{recRosId}}\",\n      \"cantidad\": 72\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "23 Requerimientos sin stock suficiente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "pm.test('Falta stock', () => pm.expect(pm.response.json().stockSuficiente).to.eql(false));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/comandas/{{comandaGrandeId}}/requerimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "comandas",
+            "{{comandaGrandeId}}",
+            "requerimientos"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "24 Producir sin stock (409, rollback)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/producciones",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "producciones"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"comandaId\": \"{{comandaGrandeId}}\",\n  \"observacion\": \"Demo\"\n}"
+        }
+      }
+    },
+    {
+      "name": "25 Comprobar rollback de Harina Extra (sigue en 50)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "pm.test('Harina Extra Inca sigue en 50 kg', () => pm.expect(pm.response.json().stock).to.eql(50));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/insumos/{{harExtId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "insumos",
+            "{{harExtId}}"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "hoy",
+      "value": ""
+    },
+    {
+      "key": "comandaId",
+      "value": ""
+    },
+    {
+      "key": "comandaGrandeId",
+      "value": ""
+    },
+    {
+      "key": "harExtId",
+      "value": ""
+    },
+    {
+      "key": "mantId",
+      "value": ""
+    },
+    {
+      "key": "levId",
+      "value": ""
+    },
+    {
+      "key": "salId",
+      "value": ""
+    },
+    {
+      "key": "azRubId",
+      "value": ""
+    },
+    {
+      "key": "colId",
+      "value": ""
+    },
+    {
+      "key": "harPastId",
+      "value": ""
+    },
+    {
+      "key": "margId",
+      "value": ""
+    },
+    {
+      "key": "harEspId",
+      "value": ""
+    },
+    {
+      "key": "chunoId",
+      "value": ""
+    },
+    {
+      "key": "azBlId",
+      "value": ""
+    },
+    {
+      "key": "polvoId",
+      "value": ""
+    },
+    {
+      "key": "recRosId",
+      "value": ""
+    },
+    {
+      "key": "recPastId",
+      "value": ""
+    },
+    {
+      "key": "recBizId",
+      "value": ""
+    }
+  ]
+}
