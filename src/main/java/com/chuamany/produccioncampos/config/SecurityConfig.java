@@ -73,6 +73,8 @@ public class SecurityConfig {
 			.authorizeHttpRequests(auth -> auth
 					// Públicas: registro y login
 					.requestMatchers("/api/auth/**").permitAll()
+					// Semana 15: health check publico (balanceadores/orquestadores); el resto de Actuator no se expone
+					.requestMatchers("/actuator/health", "/actuator/info").permitAll()
 					// Documentacion de la API (en produccion se desactiva por propiedades)
 					.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 					// Resto exige JWT; solo ADMIN borra (@PreAuthorize en los Controllers)
